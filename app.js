@@ -4,6 +4,9 @@ var logger = require('morgan');
 // routers
 // var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+const loginRouter = require('./routes/login');
+const productRouter = require('./routes/products');
+const validAuthentication = require('./middlewares/validAuthentication');
 
 // inicio de api
 var app = express();
@@ -55,6 +58,11 @@ asdRouter.get('/', function(req, res, next) {
 });
 
 app.use('/asd', asdRouter);
+app.use('/login', loginRouter);
+
+app.use(validAuthentication);
+
+app.use('/products', productRouter);
 // app.use('/users', usersRouter);
 
 module.exports = app;
