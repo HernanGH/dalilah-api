@@ -57,11 +57,14 @@ asdRouter.get('/', function(req, res, next) {
   res.json({ name: 'asd' });
 });
 
+// router publicos
 app.use('/asd', asdRouter);
 app.use('/login', loginRouter);
 
+// middleware de autenticacion
 app.use(validAuthentication);
 
+// router privamos, con autenticacion
 app.use('/products', productRouter);
 // app.use('/users', usersRouter);
 
