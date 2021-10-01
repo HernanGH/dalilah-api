@@ -2,25 +2,97 @@ swagger: "2.0"
 info:
   description: "This is server dalilah server. For this sample, you can use the api key `special-key` to test the authorization"
   version: "1.0.0"
-  title: "Swagger Petstore"
-  termsOfService: "http://swagger.io/terms/"
+  title: "Swagger Dalilah resto"
   contact:
-    email: "apiteam@swagger.io"
-  license:
-    name: "Apache 2.0"
-    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "petstore.swagger.io"
-basePath: "/v2"
+    email: "asd@mail.com"
+host: "localhost:3000"
+basePath: "/"
 tags:
-- name: "pet"
-  description: "Everything about your Pets"
-  externalDocs:
-    description: "Find out more"
-    url: "http://swagger.io"
-- name: "store"
-  description: "Access to Petstore orders"
+- name: "order"
+  description: "Operations about your order"
+- name: "product"
+  description: "Access to dalilah resto product"
 - name: "user"
   description: "Operations about user"
-  externalDocs:
-    description: "Find out more about our store"
-    url: "http://swagger.io"
+schemes:
+- "http"
+paths:
+  /users/login:
+    post:
+      tags:
+      - "user"
+      summary: "Logs user into the system"
+      description: "Logs user into the system"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created user object"
+        required: true
+        schema:
+          $ref: "#/definitions/LoginParams"
+      responses:
+        "403":
+          description: "user or password wrong"
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/LoginSuccess"
+  /products:
+    get:
+      tags:
+      - "product"
+      summary: "Returs Products"
+      description: "Returs Products"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Product"
+        "401":
+          description: "token is required"
+      security:
+      - authorization: []
+securityDefinitions:
+  authorization:
+    type: "apiKey"
+    name: "authorization"
+    in: "header"
+definitions:
+  LoginSuccess:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+      token:
+        type: "string"
+  Product:
+    type: "object"
+    properties:
+      id:
+        type: "number"
+      name:
+        type: "string"
+      price:
+        type: "number"
+  LoginParams:
+    type: "object"
+    properties:
+      user:
+        type: "string"
+        description: "The user name for login"
+        required:
+        - "true"
+      password:
+        type: "string"
+        description: "The password for login"
+        required:
+        - "true"
+      

@@ -1,26 +1,68 @@
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 // mi data base
 const users = [
   {
     id: 0,
     user: "codigo",
-    password: "1234"
+    password: "1234",
+    mail: "codigo@mail.com"
   },
   {
     id: 1,
     user: "acamica",
-    password: "acamica"
+    password: "acamica",
+    mail: "acamica@mail.com"
   }
 ];
 
-const getUser = (user, password) => {
+const getUser = async (mail, password) => {
   const userEncontrado = users
-    .find((userItem) => userItem.user === user
-      && userItem.password === password);
+    .find((userItem) => userItem.mail === mail);
+  
+  const result = await bcrypt.compare(password, userEncontrado.password)
+
+  if(!result) {
+    return null
+  }
+
+  delete userEncontrado.password;
   
   return userEncontrado;
 };
 
 const getAllUser = () => users;
+
+const createUser = async (user) => {
+  if (!(user.mail || user.user || user.password)) {
+    return null;
+  }
+
+  const yaExisteElUsuario = users
+    .some((userItem) => userItem.mail === user.mail);
+  
+  if (yaExisteElUsuario) {
+    return null;
+  }
+
+  const lastId = users[users.length - 1].id;
+
+  const { password } = user;
+  const hash = await bcrypt.hash(password, saltRounds);
+
+  const newUser = {
+    ...user, // spread operator
+    id: lastId + 1
+  };
+  delete newUser.password;
+
+  users.push({
+    ...newUser,
+    password: hash
+  });
+  return newUser;
+};
 
 // const modulos = {
 //   getUser: getUser,
@@ -31,5 +73,5 @@ const getAllUser = () => users;
 
 // es igual a
 module.exports = {
-  getUser, getAllUser
+  getUser, getAllUser, createUser
 };

@@ -1,10 +1,11 @@
-var express = require('express');
-var logger = require('morgan');
+const express = require('express');
+const logger = require('morgan');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
 
 // routers
 // var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-const loginRouter = require('./routes/login');
+const usersRouter = require('./routes/users');
 const productRouter = require('./routes/products');
 const validAuthentication = require('./middlewares/validAuthentication');
 
@@ -15,6 +16,11 @@ var app = express();
 app.use(logger('dev')); // logeo de request a modo dev con libreria morgan
 app.use(express.json()); // configura un header para que leer y returar jsons
 app.use(express.urlencoded({ extended: false })); // encodear la url que recibe el endpoint
+
+// documentation
+const swaggerDocument = YAML.load('./spec.yml');
+// const swaggerDocumentPets = YAML.load('./pet-docs.yml');
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // 1er endpoint de mi api
 const PATH = '/';
@@ -59,7 +65,7 @@ asdRouter.get('/', function(req, res, next) {
 
 // router publicos
 app.use('/asd', asdRouter);
-app.use('/login', loginRouter);
+app.use('/users', usersRouter);
 
 // middleware de autenticacion
 app.use(validAuthentication);
@@ -67,5 +73,8 @@ app.use(validAuthentication);
 // router privamos, con autenticacion
 app.use('/products', productRouter);
 // app.use('/users', usersRouter);
+
+
+
 
 module.exports = app;
