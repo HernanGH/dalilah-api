@@ -6,13 +6,13 @@ const users = [
   {
     id: 0,
     user: "codigo",
-    password: "1234",
+    password: "$2b$10$sRQmBqExMXxoXbSFVB.9BuHC7efpmKram9l1E4l7cnvOjQ5lc2w3u", // 1234
     mail: "codigo@mail.com"
   },
   {
     id: 1,
     user: "acamica",
-    password: "acamica",
+    password: "$2b$10$/HJ9SfJ3HgsTEcqBnwBm2OdGXsTplyFxIE34QO2jRhRQR4x0BSkzi", // acamica
     mail: "acamica@mail.com"
   }
 ];
@@ -21,14 +21,18 @@ const getUser = async (mail, password) => {
   const userEncontrado = users
     .find((userItem) => userItem.mail === mail);
   
-  const result = await bcrypt.compare(password, userEncontrado.password)
+  if(!userEncontrado) {
+    return null
+  }
+
+  const result = await bcrypt.compare(password, userEncontrado.password);
 
   if(!result) {
     return null
   }
 
   delete userEncontrado.password;
-  
+
   return userEncontrado;
 };
 

@@ -6,10 +6,9 @@ const { getUser, createUser } = require('../models/users');
 
 const userRouter = express.Router();
 
-userRouter.post('/login', (request, response, next) => {
-  console.log(request.body);
-  const user = getUser(request.body.mail, request.body.password);
-  
+userRouter.post('/login', async (request, response, next) => {
+  const user = await getUser(request.body.mail, request.body.password);
+
   // si el usuario existe
   if(user) {
     const token = jwt.sign(user, SECRET);
