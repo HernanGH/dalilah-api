@@ -70,7 +70,7 @@ app.use('/users', usersRouter);
 // middleware de autenticacion
 app.use(validAuthentication);
 
-// router privamos, con autenticacion
+// router privados, con autenticacion
 app.use('/products', productRouter);
 // app.use('/users', usersRouter);
 
