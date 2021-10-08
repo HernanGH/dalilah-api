@@ -1,37 +1,49 @@
-// mi data base
-const products = [
-  {
-    id: 0,
-    name: "hamburguesa",
-    price: 100
-  },
-  {
-    id: 1,
-    name: "papas fritas",
-    price: 80
-  }
-];
+const { QueryTypes } = require('sequelize');
+const sequelize = require('./conexion');
 
-const getProduct = (id) => {
-  const productEncontrado = products
-    .find((productoItem) => productoItem.id === id);
-  
-  return productEncontrado;
+const getProduct = async (id) => {
+  try {
+    const [productEncontrado] = await sequelize.query(
+      `SELECT * FROM products WHERE id = ${id};`,
+      { type: QueryTypes.SELECT }
+    );
+    return productEncontrado || null;
+  } catch (error) {
+    console.error('ERROR');
+    return null;
+  }
 };
 
-const getAllProducts = () => products;
+const getAllProducts = async () => {
+  try {
+    const products = await sequelize.query(`SELECT * FROM products;`, { type: QueryTypes.SELECT });
+    return products;
+  } catch (error) {
+    console.error('ERROR');
+    return [];
+  }
+};
 
-const createProduct = (product) => {
+const createProduct = async (product) => {
   // si el producto tiene name y price
   if(product.name && product.price) {
-    const lastId = products[products.length - 1].id;
-    
-    const productWithId = {
-      id: lastId + 1,
-      ...product
-    };
-    products.push(productWithId);
-    return productWithId;
+    try {
+      const [productId] = await sequelize.query(
+        `INSERT INTO products
+        (name, price)
+        VALUES
+        ('${product.name}', '${product.price}');`,
+        { type: QueryTypes.INSERT }
+      );
+      const productSaved = {
+        id: productId,
+        ...product
+      };
+      return productSaved;
+    } catch (error) {
+      console.error('ERROR: ', error);
+      return null;
+    }
   } else {
     return null;
   }
@@ -72,12 +84,16 @@ const updateProduct = (id, product, overWrite = false) => {
   }
 };
 
-const deleteProduct = (id) => {
-  const productDeleted = products.splice(id, 1);
-  if (productDeleted.length === 0) {
+const deleteProduct = async (id) => {
+  try {
+    await sequelize.query(
+      `DELETE FROM products WHERE id = ${id};`,
+      { type: QueryTypes.DELETE }
+    );
+    return id;
+  } catch (error) {
+    console.error('ERROR');
     return null;
-  } else {
-    return productDeleted[0];
   }
 };
 

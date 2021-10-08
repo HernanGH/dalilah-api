@@ -7,14 +7,14 @@ const {
 
 const productRouter = express.Router();
 
-productRouter.get('/', (req, res, next) => {
-  const products = getAllProducts();
+productRouter.get('/', async (req, res, next) => {
+  const products = await getAllProducts();
   res.send({ message: 'success', data: products });
 });
 
-productRouter.get('/:id', (req, res, next) => {
+productRouter.get('/:id', async (req, res, next) => {
   const id = parseInt(req.params.id);
-  const product = getProduct(id);
+  const product = await getProduct(id);
 
   if (product) {
     res.send({ message: 'success', data: product });
@@ -80,12 +80,14 @@ productRouter.patch('/:id', async (req, res, next) => {
 productRouter.delete('/:id', async (req, res, next) => {
   const id = parseInt(req.params.id);
 
-  const productDeleted = deleteProduct(id);
+  const productIdDeleted = await deleteProduct(id);
 
-  if (productDeleted) {
+  if (productIdDeleted) {
     res.send({
       message: 'product delete successfuly',
-      data: productDeleted
+      data: {
+        id: productIdDeleted
+      }
     });
   } else {
     res
