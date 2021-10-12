@@ -1,6 +1,10 @@
 const Sequelize = require('sequelize');
+const {
+  DB_HOST, DB_PASSWORD, DB_PORT,
+  DB_USER, DB_NAME
+} = require('../config');
 
-const path = `mysql://root:rootroot@localhost:3306/resto`;
+const path = `mysql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
 
 const sequelize = new Sequelize(path, { operatorsAliases: false });
 

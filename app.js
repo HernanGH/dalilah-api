@@ -2,6 +2,7 @@ const express = require('express');
 const logger = require('morgan');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
+require('dotenv').config();
 
 // routers
 // var indexRouter = require('./routes/index');
