@@ -42,5 +42,9 @@ const insertData = async () => {
   }
 };
 
-// createTables();
-insertData();
+const main = async () => {
+  await createTables();
+  await insertData();
+};
+
+main();
