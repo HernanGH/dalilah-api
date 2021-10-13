@@ -59,24 +59,6 @@ productRouter.put('/:id', async (req, res, next) => {
   }
 });
 
-productRouter.patch('/:id', async (req, res, next) => {
-  const productUpdate = req.body;
-  const productId = parseInt(req.params.id);
-
-  const productSaved = await updateProduct(productId, productUpdate, false);
-  
-  if(productSaved) {
-    res.send({
-      message: 'product updated successfuly',
-      data: productSaved
-    });
-  } else {
-    res
-      .status(404)
-      .json({ message: 'product update wrongt'});
-  }
-});
-
 productRouter.delete('/:id', async (req, res, next) => {
   const id = parseInt(req.params.id);
 
