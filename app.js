@@ -8,6 +8,7 @@ require('dotenv').config();
 // var indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const productRouter = require('./routes/products');
+const orderRouter = require('./routes/orders');
 const validAuthentication = require('./middlewares/validAuthentication');
 
 // inicio de api
@@ -73,7 +74,7 @@ app.use(validAuthentication);
 
 // router privados, con autenticacion
 app.use('/products', productRouter);
-// app.use('/users', usersRouter);
+app.use('/orders', orderRouter);
 
 
 
