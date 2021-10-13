@@ -17,7 +17,7 @@ const order_products = [
     product_id: 1,
     cantidad: 2
   }
-]
+];
 
 const orders = [
   {
@@ -30,14 +30,14 @@ const orders = [
     user_id: 0,
     total: 80
   }
-]
+];
 
 const getAllOrders = async () => {
   const orderWithProducts = orders.map((order) => {
     return {
       ...order,
       products: order_products.filter((order_productsItem) => order_productsItem.order_id === order.id)
-    }
+    };
   })
 
   return orderWithProducts;
