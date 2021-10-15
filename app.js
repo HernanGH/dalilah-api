@@ -6,7 +6,7 @@ require('dotenv').config();
 
 // routers
 // var indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+const authRouter = require('./routes/auth');
 const productRouter = require('./routes/products');
 const orderRouter = require('./routes/orders');
 const validAuthentication = require('./middlewares/validAuthentication');
@@ -55,19 +55,8 @@ app.use(myLogger);
 
 app.get(PATH, ENDPOINT, segundoEndpoint);
 
-// Mi primer router, para no abusar de la pobre app
-// agrupar endpoints relacionados
-var asdRouter = express.Router();
-
-/* GET home page. */
-asdRouter.get('/', function(req, res, next) {
-  console.log('1er endpoint del router');
-  res.json({ name: 'asd' });
-});
-
 // router publicos
-app.use('/asd', asdRouter);
-app.use('/users', usersRouter);
+app.use('/auth', authRouter);
 
 // middleware de autenticacion
 app.use(validAuthentication);

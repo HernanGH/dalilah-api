@@ -4,9 +4,9 @@ const jwt = require('jsonwebtoken');
 const { SECRET } = require('../config');
 const { getUser, createUser } = require('../models/users');
 
-const userRouter = express.Router();
+const authRouter = express.Router();
 
-userRouter.post('/login', async (request, response, next) => {
+authRouter.post('/login', async (request, response, next) => {
   const user = await getUser(request.body.mail, request.body.password);
 
   // si el usuario existe
@@ -19,7 +19,7 @@ userRouter.post('/login', async (request, response, next) => {
   }
 });
 
-userRouter.post('/sign-up', async (request, response, next) => {
+authRouter.post('/sign-up', async (request, response, next) => {
   console.log(request.body);
   const newUser = request.body;
   const userSaved = await createUser(newUser);
@@ -32,4 +32,4 @@ userRouter.post('/sign-up', async (request, response, next) => {
 });
 
 
-module.exports = userRouter;
+module.exports = authRouter;

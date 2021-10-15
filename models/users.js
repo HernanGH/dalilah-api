@@ -1,71 +1,87 @@
 const bcrypt = require('bcrypt');
+const { QueryTypes } = require('sequelize');
+
+const sequelize = require('./conexion');
+
 const saltRounds = 10;
 
-// mi data base
-const users = [
-  {
-    id: 0,
-    user: "codigo",
-    password: "$2b$10$sRQmBqExMXxoXbSFVB.9BuHC7efpmKram9l1E4l7cnvOjQ5lc2w3u", // 1234
-    mail: "codigo@mail.com"
-  },
-  {
-    id: 1,
-    user: "acamica",
-    password: "$2b$10$/HJ9SfJ3HgsTEcqBnwBm2OdGXsTplyFxIE34QO2jRhRQR4x0BSkzi", // acamica
-    mail: "acamica@mail.com"
-  }
-];
-
 const getUser = async (mail, password) => {
-  const userEncontrado = users
-    .find((userItem) => userItem.mail === mail);
-  
-  if(!userEncontrado) {
-    return null
+  try {
+    const [userEncontrado] = await sequelize.query(
+      `SELECT * FROM users WHERE mail = '${mail}';`,
+      { type: QueryTypes.SELECT }
+    );
+    
+    if(!userEncontrado) {
+      return null;
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(password, userEncontrado.password);
+
+    if(!isPasswordCorrect) {
+      return null;
+    }
+
+    delete userEncontrado.password;
+
+    return userEncontrado;  
+  } catch (error) {
+    console.error('ERROR: ', error);
+    return null;
   }
-
-  const result = await bcrypt.compare(password, userEncontrado.password);
-
-  if(!result) {
-    return null
-  }
-
-  delete userEncontrado.password;
-
-  return userEncontrado;
 };
 
-const getAllUser = () => users;
+const getAllUser = async () => {
+  try {
+    const users = await sequelize.query(`SELECT * FROM users;`, { type: QueryTypes.SELECT });
+    return users;
+  } catch (error) {
+    console.error('ERROR: ', error);
+    return [];
+  }
+};
 
 const createUser = async (user) => {
+  // validacion: user tiene que tener mail, user y password para ser creado
   if (!(user.mail || user.user || user.password)) {
     return null;
   }
 
-  const yaExisteElUsuario = users
-    .some((userItem) => userItem.mail === user.mail);
+  try {
+    // validacion: no existe el mail en la db
+    const [yaExisteElUsuario] = await sequelize.query(
+      `SELECT * FROM users WHERE mail = '${user.mail}';`,
+      { type: QueryTypes.SELECT }
+    );
   
-  if (yaExisteElUsuario) {
-    return null;
+    if (yaExisteElUsuario) {
+      return null;
+    }
+
+    // hasheo de password
+    const { password } = user;
+    const hash = await bcrypt.hash(password, saltRounds);
+
+    // insert en la db del users y obtenemos el id
+    const [userId] = await sequelize.query(
+      `INSERT INTO users
+      (user, mail, password)
+      VALUES
+      ('${user.user}', '${user.mail}', '${hash}');`,
+      { type: QueryTypes.INSERT }
+    );
+
+    // armamos el usuario para devolver con el id, sin la password
+    const userSaved = {
+      id: userId,
+      user: user.user,
+      mail: user.mail
+    };
+
+    return userSaved;
+  } catch (error) {
+    console.log('Error: ', error);
   }
-
-  const lastId = users[users.length - 1].id;
-
-  const { password } = user;
-  const hash = await bcrypt.hash(password, saltRounds);
-
-  const newUser = {
-    ...user, // spread operator
-    id: lastId + 1
-  };
-  delete newUser.password;
-
-  users.push({
-    ...newUser,
-    password: hash
-  });
-  return newUser;
 };
 
 // const modulos = {

@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { QueryTypes } = require('sequelize');
 const sequelize = require('../models/conexion');
 
@@ -67,6 +68,22 @@ const INSERT_PRODUCT_2 = `
   ('papas fritas', '80');
 `;
 
+// password: 1234
+const INSERT_USER_1 = `
+  INSERT INTO users
+  (password, mail, user)
+  VALUES
+  ('$2b$10$sRQmBqExMXxoXbSFVB.9BuHC7efpmKram9l1E4l7cnvOjQ5lc2w3u', 'codigo@mail.com', 'codigo');
+`;
+
+// password: acamica
+const INSERT_USER_2 = `
+  INSERT INTO users
+  (password, mail, user)
+  VALUES
+  ('$2b$10$/HJ9SfJ3HgsTEcqBnwBm2OdGXsTplyFxIE34QO2jRhRQR4x0BSkzi', 'acamica@mail.com', 'acamica');
+`;
+
 const createTables = async () => {
   try {
     await sequelize.query(CREATE_PRODUCT_TABLE);
@@ -81,16 +98,18 @@ const createTables = async () => {
 
 const insertData = async () => {
   try {
-    await sequelize.query(INSERT_PRODUCT_1, { type: QueryTypes.INSERT });
-    await sequelize.query(INSERT_PRODUCT_2, { type: QueryTypes.INSERT });
-    console.log('Products inserted successfuly');
+    // await sequelize.query(INSERT_PRODUCT_1, { type: QueryTypes.INSERT });
+    // await sequelize.query(INSERT_PRODUCT_2, { type: QueryTypes.INSERT });
+    await sequelize.query(INSERT_USER_1, { type: QueryTypes.INSERT });
+    await sequelize.query(INSERT_USER_2, { type: QueryTypes.INSERT });
+    console.log('Products and Users inserted successfuly');
   } catch (error) {
     console.error('Error: ', error);
   }
 };
 
 const main = async () => {
-  await createTables();
+  // await createTables();
   await insertData();
 };
 
