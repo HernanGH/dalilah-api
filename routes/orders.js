@@ -39,7 +39,7 @@ orderRouter.get('/:id', checkAdmin, async (req, res, next) => {
   }
 });
 
-orderRouter.post('/', async (res, res, next) => {
+orderRouter.post('/', async (req, res, next) => {
   const newOrder = {
     ...req.body,
     userId: req.user.id
@@ -58,7 +58,7 @@ orderRouter.post('/', async (res, res, next) => {
   }
 });
 
-orderRouter.put('/:id', checkAdmin, async (res, res, next) => {
+orderRouter.put('/:id', checkAdmin, async (req, res, next) => {
   const orderUpdate = req.body;
   const orderId = parseInt(req.params.id);
 

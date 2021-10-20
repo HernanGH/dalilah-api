@@ -60,7 +60,7 @@ const getMyOrders = async (userId) => {
         ON orders.id = order_product.order_id
         INNER JOIN products
         ON products.id = order_product.product_id
-        WHERE order.user_id = ${userId};`,
+        WHERE orders.user_id = ${userId};`,
       { type: QueryTypes.SELECT }
     );
     return unifyOrders(ordersWithProducts);
