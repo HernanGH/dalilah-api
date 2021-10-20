@@ -1,4 +1,5 @@
 const express = require('express');
+const checkAdmin = require('../middlewares/checkAdmin');
 
 const {
   getAllProducts, createProduct, updateProduct,
@@ -25,7 +26,7 @@ productRouter.get('/:id', async (req, res, next) => {
   }
 });
 
-productRouter.post('/', async (req, res, next) => {
+productRouter.post('/', checkAdmin, async (req, res, next) => {
   const newProduct = req.body;
   const productSaved = await createProduct(newProduct);
 
@@ -41,11 +42,11 @@ productRouter.post('/', async (req, res, next) => {
   }
 });
 
-productRouter.put('/:id', async (req, res, next) => {
+productRouter.put('/:id', checkAdmin, async (req, res, next) => {
   const productUpdate = req.body;
   const productId = parseInt(req.params.id);
 
-  const productSaved = await updateProduct(productId, productUpdate, true);
+  const productSaved = await updateProduct(productId, productUpdate);
   
   if(productSaved) {
     res.send({
@@ -59,7 +60,7 @@ productRouter.put('/:id', async (req, res, next) => {
   }
 });
 
-productRouter.delete('/:id', async (req, res, next) => {
+productRouter.delete('/:id', checkAdmin, async (req, res, next) => {
   const id = parseInt(req.params.id);
 
   const productIdDeleted = await deleteProduct(id);

@@ -58,7 +58,7 @@ app.get(PATH, ENDPOINT, segundoEndpoint);
 // router publicos
 app.use('/auth', authRouter);
 
-// middleware de autenticacion
+// middleware de autenticacion global
 app.use(validAuthentication);
 
 // router privados, con autenticacion

@@ -16,6 +16,7 @@ const CREATE_USER_TABLE = `
     password VARCHAR(255) NOT NULL,
     mail VARCHAR(45) NOT NULL,
     user VARCHAR(45) NOT NULL,
+    admin TINYINT NOT NULL DEFAULT 0,
     PRIMARY KEY (id));
 `;
 
@@ -24,6 +25,7 @@ const CREATE_ORDER_TABLE = `
     id INT NOT NULL AUTO_INCREMENT,
     user_id INT NULL,
     total VARCHAR(45) NULL,
+    status VARCHAR(45) NULL,
     PRIMARY KEY (id),
     INDEX user_id_idx (user_id ASC) VISIBLE,
     CONSTRAINT user_id
@@ -73,16 +75,21 @@ const INSERT_USER_1 = `
   INSERT INTO users
   (password, mail, user)
   VALUES
-  ('$2b$10$sRQmBqExMXxoXbSFVB.9BuHC7efpmKram9l1E4l7cnvOjQ5lc2w3u', 'codigo@mail.com', 'codigo');
+  ('$2b$10$sRQmBqExMXxoXbSFVB.9BuHC7efpmKram9l1E4l7cnvOjQ5lc2w3u', 'user@mail.com', 'user');
 `;
 
 // password: acamica
 const INSERT_USER_2 = `
   INSERT INTO users
-  (password, mail, user)
+  (password, mail, user, admin)
   VALUES
-  ('$2b$10$/HJ9SfJ3HgsTEcqBnwBm2OdGXsTplyFxIE34QO2jRhRQR4x0BSkzi', 'acamica@mail.com', 'acamica');
+  ('$2b$10$/HJ9SfJ3HgsTEcqBnwBm2OdGXsTplyFxIE34QO2jRhRQR4x0BSkzi', 'admin@mail.com', 'admin', 1);
 `;
+
+const DROP_USER_TABLE = `DROP TABLE IF EXISTS users;`
+const DROP_PRODUCT_TABLE = `DROP TABLE IF EXISTS products;`
+const DROP_ORDER_TABLE = `DROP TABLE IF EXISTS orders;`
+const DROP_ORDER_PRODUCT_TABLE = `DROP TABLE IF EXISTS order_product;`
 
 const createTables = async () => {
   try {
@@ -108,7 +115,20 @@ const insertData = async () => {
   }
 };
 
+const deleteTables = async () => {
+  try {
+    await sequelize.query(DROP_ORDER_PRODUCT_TABLE);
+    await sequelize.query(DROP_ORDER_TABLE);
+    await sequelize.query(DROP_USER_TABLE);
+    await sequelize.query(DROP_PRODUCT_TABLE);
+    console.log('tables products, users, orders and order_product deleted successfuly');
+  } catch (error) {
+    console.error('Error: ', error);
+  }
+};
+
 const main = async () => {
+  await deleteTables();
   await createTables();
   await insertData();
 };

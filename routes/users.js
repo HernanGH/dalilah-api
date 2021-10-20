@@ -1,4 +1,5 @@
 const express = require('express');
+const checkAdmin = require('../middlewares/checkAdmin');
 const {
   createUser, getAllUsers,
   getUserById, deleteUser, updateUser
@@ -7,12 +8,26 @@ const {
 
 const userRouter = express.Router();
 
-userRouter.get('/', async (req, res, next) => {
+userRouter.get('/', checkAdmin, async (req, res, next) => {
   const users = await getAllUsers();
   res.send({ message: 'success', data: users });
 });
 
-userRouter.get('/:id', async (req, res, next) => {
+// este endpoint lo ponemos de /:id, sino va a tomar el /me como un id
+userRouter.get('/me', async (req, res, next) => {
+  const id = parseInt(req.user.id);
+  const user = await getUserById(id);
+
+  if (user) {
+    res.send({ message: 'success', data: user });
+  } else {
+    res
+      .status(404)
+      .json({ message: 'user not found'});
+  }
+});
+
+userRouter.get('/:id', checkAdmin, async (req, res, next) => {
   const id = parseInt(req.params.id);
   const user = await getUserById(id);
 
@@ -25,7 +40,7 @@ userRouter.get('/:id', async (req, res, next) => {
   }
 });
 
-userRouter.post('/', async (req, res, next) => {
+userRouter.post('/', checkAdmin, async (req, res, next) => {
   const newUser = req.body;
   const userSaved = await createUser(newUser);
 
@@ -41,7 +56,7 @@ userRouter.post('/', async (req, res, next) => {
   }
 });
 
-userRouter.put('/:id', async (req, res, next) => {
+userRouter.put('/:id', checkAdmin, async (req, res, next) => {
   const userUpdate = req.body;
   const userId = parseInt(req.params.id);
 
@@ -59,7 +74,7 @@ userRouter.put('/:id', async (req, res, next) => {
   }
 });
 
-userRouter.delete('/:id', async (req, res, next) => {
+userRouter.delete('/:id', checkAdmin, async (req, res, next) => {
   const id = parseInt(req.params.id);
 
   const userIdDeleted = await deleteUser(id);

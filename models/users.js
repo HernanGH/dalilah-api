@@ -33,7 +33,7 @@ const getUser = async (mail, password) => {
 
 const getAllUsers = async () => {
   try {
-    const users = await sequelize.query(`SELECT id, mail, user FROM users;`, { type: QueryTypes.SELECT });
+    const users = await sequelize.query(`SELECT id, mail, user, admin FROM users;`, { type: QueryTypes.SELECT });
     return users;
   } catch (error) {
     console.error('ERROR: ', error);
@@ -87,7 +87,7 @@ const createUser = async (user) => {
 const getUserById = async (id) => {
   try {
     const [userEncontrado] = await sequelize.query(
-      `SELECT id, user, mail FROM users WHERE id = ${id};`,
+      `SELECT id, user, mail, admin FROM users WHERE id = ${id};`,
       { type: QueryTypes.SELECT }
     );
     return userEncontrado || null;

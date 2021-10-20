@@ -1,9 +1,12 @@
 const express = require('express');
-const { getAllOrders, getOrderById } = require('../models/orders');
+const checkAdmin = require('../middlewares/checkAdmin');
+const {
+  getAllOrders, getOrderById, getMyOrders, createOrder, updateOrder
+} = require('../models/orders');
 
 const orderRouter = express.Router();
 
-orderRouter.get('/', async (req, res, next) => {
+orderRouter.get('/', checkAdmin, async (req, res, next) => {
   const orders = await getAllOrders();
 
   res.send({
@@ -12,7 +15,17 @@ orderRouter.get('/', async (req, res, next) => {
   });
 });
 
-orderRouter.get('/:id', async (req, res, next) => {
+// este endpoint lo ponemos de /:id, sino va a tomar el /me como un id
+orderRouter.get('/me', async (req, res, next) => {
+  const orders = await getMyOrders(parseInt(req.user.id));
+
+  res.send({
+    message: 'success',
+    data: orders
+  });
+});
+
+orderRouter.get('/:id', checkAdmin, async (req, res, next) => {
   const orderId = req.params.id;
 
   const order = await getOrderById(orderId);
@@ -23,6 +36,43 @@ orderRouter.get('/:id', async (req, res, next) => {
     res
       .status(404)
       .json({ message: 'order not found'});
+  }
+});
+
+orderRouter.post('/', async (res, res, next) => {
+  const newOrder = {
+    ...req.body,
+    userId: req.user.id
+  };
+  const orderSaved = await createOrder(newOrder);
+
+  if (orderSaved) {
+    res.send({
+      message: 'order created successfuly',
+      data: orderSaved
+    });
+  } else {
+    res
+      .status(404)
+      .json({ message: 'order creation wrongt'});
+  }
+});
+
+orderRouter.put('/:id', checkAdmin, async (res, res, next) => {
+  const orderUpdate = req.body;
+  const orderId = parseInt(req.params.id);
+
+  const orderSaved = await updateOrder(orderId, orderUpdate);
+  
+  if(orderSaved) {
+    res.send({
+      message: 'order updated successfuly',
+      data: orderSaved
+    });
+  } else {
+    res
+      .status(404)
+      .json({ message: 'order update wrongt'});
   }
 });
 

@@ -13,7 +13,7 @@ const validAuthentication = (req, res, next) => {
     if (token) {
       try {
         const decoded = jwt.verify(token, SECRET); // desarmamos el token
-        req.user = decoded; // guardamos el user en request
+        req.user = decoded; // guardamos el user en el objeto request
         next(); // seguimos al siguiente middleware o endpoint
       } catch (error) {
         console.error(error);
