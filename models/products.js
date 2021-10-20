@@ -9,7 +9,7 @@ const getProduct = async (id) => {
     );
     return productEncontrado || null;
   } catch (error) {
-    console.error('ERROR');
+    console.error('ERROR', error);
     return null;
   }
 };
@@ -19,7 +19,7 @@ const getAllProducts = async () => {
     const products = await sequelize.query(`SELECT * FROM products;`, { type: QueryTypes.SELECT });
     return products;
   } catch (error) {
-    console.error('ERROR');
+    console.error('ERROR', error);
     return [];
   }
 };
@@ -84,7 +84,7 @@ const deleteProduct = async (id) => {
     );
     return id;
   } catch (error) {
-    console.error('ERROR');
+    console.error('ERROR', error);
     return null;
   }
 };

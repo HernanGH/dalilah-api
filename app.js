@@ -5,10 +5,10 @@ const YAML = require('yamljs');
 require('dotenv').config();
 
 // routers
-// var indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const productRouter = require('./routes/products');
 const orderRouter = require('./routes/orders');
+const userRouter = require('./routes/users');
 const validAuthentication = require('./middlewares/validAuthentication');
 
 // inicio de api
@@ -64,6 +64,7 @@ app.use(validAuthentication);
 // router privados, con autenticacion
 app.use('/products', productRouter);
 app.use('/orders', orderRouter);
+app.use('/users', userRouter);
 
 
 

@@ -98,8 +98,8 @@ const createTables = async () => {
 
 const insertData = async () => {
   try {
-    // await sequelize.query(INSERT_PRODUCT_1, { type: QueryTypes.INSERT });
-    // await sequelize.query(INSERT_PRODUCT_2, { type: QueryTypes.INSERT });
+    await sequelize.query(INSERT_PRODUCT_1, { type: QueryTypes.INSERT });
+    await sequelize.query(INSERT_PRODUCT_2, { type: QueryTypes.INSERT });
     await sequelize.query(INSERT_USER_1, { type: QueryTypes.INSERT });
     await sequelize.query(INSERT_USER_2, { type: QueryTypes.INSERT });
     console.log('Products and Users inserted successfuly');
@@ -109,7 +109,7 @@ const insertData = async () => {
 };
 
 const main = async () => {
-  // await createTables();
+  await createTables();
   await insertData();
 };
 
